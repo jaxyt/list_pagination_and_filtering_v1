@@ -5,6 +5,8 @@ FSJS project 2 - List Filter and Pagination
    
 // Study guide for this project - https://drive.google.com/file/d/1OD1diUsTMdpfMDv677TfL1xO2CEkykSz/view?usp=sharing
 
+
+
 const mainDiv = document.querySelector('div.page');
 const searchDiv = document.querySelector('div.page-header');
 
@@ -32,6 +34,7 @@ const searchButton = document.querySelector('button');
 
 const ul = document.querySelector('ul.student-list');
 const studentList = ul.children;
+
 
 
 
@@ -75,7 +78,7 @@ const appendPageLinks = (list)=>{
 
     for (let i = 0; i < newUl.children.length; i++) { //adds an event listener to each 'a' link
         const link = newUl.children[i].firstElementChild;
-        link.addEventListener('click', (e)=>{ 
+        link.addEventListener('click', (e)=>{
             for (let k = 0; k < newUl.children.length; k++) {
                 const currentLink = newUl.children[k].firstElementChild;
                 if (currentLink.className === 'active') {
@@ -83,9 +86,14 @@ const appendPageLinks = (list)=>{
                 }
             }
             e.target.className = 'active';
-            showPage(studentList, e.target.textContent);
+            showPage(list, e.target.textContent);
         }) 
     }
+}
+
+const removePageLinks = ()=>{
+   const childDiv = document.querySelector('div.pagination');
+   mainDiv.removeChild(childDiv);
 }
 
 
@@ -96,22 +104,36 @@ const appendPageLinks = (list)=>{
 searchButton.addEventListener('click', (e)=>{
    const searchValue = e.target.previousElementSibling.value;
    for (let k = 0; k < studentList.length; k++) { //first sets all students display styles to none
+      const stu = studentList[k];
+      stu.style.display = 'none';
+  }
+  for (let i = 0; i < studentList.length; i++) { //searches through names in realtime to find partial matches
+      const stu = studentList[i]; 
+      const name = stu.firstElementChild.firstElementChild.nextElementSibling.textContent;
+      
+
+      if (name.includes(searchValue)) {
+          stu.style.display = '';
+      }
+  }
+})
+
+searchInput.addEventListener('keyup', (e)=>{
+   const searchResults = []
+   const searchValue = e.target.value;
+   for (let k = 0; k < studentList.length; k++) { //first sets all students display styles to none
        const stu = studentList[k];
        stu.style.display = 'none';
    }
-   for (let i = 0; i < studentList.length; i++) { //searches through the entire list of students to find a matching name
+   for (let i = 0; i < studentList.length; i++) { //searches through names in realtime to find partial matches
        const stu = studentList[i]; 
        const name = stu.firstElementChild.firstElementChild.nextElementSibling.textContent;
-       const fullName = name.split(' ');
-       const firstName = fullName[0];
-       const lastName = fullName[1];
 
-       if (name === searchValue) {
-           stu.style.display = '';
-       } else if (firstName === searchValue) {
-           stu.style.display = '';
-       } else if (lastName === searchValue) {
-           stu.style.display = '';
+       if (name.includes(searchValue)) {
+         searchResults.push(stu);
+         removePageLinks();
+         showPage(searchResults, 1);
+         appendPageLinks(searchResults);
        }
    }
 })
