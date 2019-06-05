@@ -96,6 +96,17 @@ const removePageLinks = ()=>{
    mainDiv.removeChild(childDiv);
 }
 
+const noResults = ()=>{
+   const li = document.createElement('li');
+   li.className = 'no-results';
+   li.textContent = 'No Results Found';
+   ul.appendChild(li);
+}
+
+const removeNoResults = ()=>{
+   const li = ul.lastElementChild;
+   ul.removeChild(li);
+}
 
 
 
@@ -136,6 +147,11 @@ searchInput.addEventListener('keyup', (e)=>{
          appendPageLinks(searchResults);
        }
    }
+   if (searchResults.length === 0) {
+      noResults();
+   } else {
+      removeNoResults();
+   }
 })
 
 
@@ -143,4 +159,7 @@ searchInput.addEventListener('keyup', (e)=>{
 appendPageLinks(studentList);
 
 showPage(studentList, 1); //just so the screen looks fine when the page first loads
+
+
+
 
